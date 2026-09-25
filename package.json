@@ -11,7 +11,8 @@
     "test:db": "./scripts/test-db.sh",
     "db:migrate": "./scripts/migrate.sh",
     "typecheck": "tsc --noEmit",
-    "db:seed": "./scripts/seed.sh"
+    "db:seed": "./scripts/seed.sh",
+    "user:create": "node scripts/create-user.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
