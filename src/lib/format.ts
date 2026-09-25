@@ -56,3 +56,8 @@ export function humanize(s: string | null | undefined): string {
   if (!s) return "—";
   return s.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
+
+/** Cairo date N days from today as YYYY-MM-DD. */
+export function isoInDays(days: number): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Cairo" }).format(new Date(Date.now() + days * 86_400_000));
+}

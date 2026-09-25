@@ -9,7 +9,7 @@ import { Kpi, KpiGrid } from "@/components/ui/Kpi";
 import { Money } from "@/components/ui/Money";
 import { AlertList, type AlertRow } from "@/components/finance/AlertList";
 import { QuickActions } from "@/components/finance/QuickActions";
-import { todayIso, toNum, pct, egp } from "@/lib/format";
+import { todayIso, toNum, pct, egp, isoInDays } from "@/lib/format";
 
 export const metadata = { title: "Finance Home" };
 
@@ -36,7 +36,7 @@ export default async function FinanceHome() {
   const reserveGap = toNum(pos.available_reserve) - toNum(pos.reserve_target);
   const availableCash = toNum(pos.company_cash) - toNum(pos.unpaid_suppliers) - toNum(pos.employee_dues);
   const mrr = subs.reduce((a, s) => a + toNum(s.mrr), 0);
-  const renewals = subs.filter((s) => s.status === "active" && s.next_billing_date && s.next_billing_date <= new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10));
+  const renewals = subs.filter((s) => s.status === "active" && s.next_billing_date && s.next_billing_date <= isoInDays(30));
 
   return (
     <>
