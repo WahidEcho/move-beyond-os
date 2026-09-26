@@ -1,0 +1,4 @@
+﻿project_ref,date,amount,currency,fx_rate,received_by,reference,is_refund
+P-2025-01,2025-02-16,250000,EGP,,Company Bank,TRX-1182,N
+P-2025-01,2025-03-22,290000,EGP,,Belal,Cash to Belal,N
+P-2025-02,2025-02-05,120000,EGP,,Company Bank,,N

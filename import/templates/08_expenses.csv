@@ -1,0 +1,7 @@
+﻿expense_ref,project_ref,description,category,subcategory,supplier_name,expense_type,total_cost,paid_amount,paid_by,paid_from,reimbursable,paid_date,supplier_due_date,currency,fx_rate,asset_name,asset_quantity,notes
+E-001,P-2025-01,LED screens,Production,Screens,Screens Pro,normal,70000,70000,Wahid,,Y,2025-03-05,,EGP,,,,
+E-002,P-2025-01,Stage & sound,Production,Sound,Supplier ABC,normal,150000,100000,Company,Company Bank,,2025-03-08,,EGP,,,,
+E-002,P-2025-01,Stage & sound,Production,Sound,Supplier ABC,normal,150000,50000,Belal,,Y,2025-03-20,,EGP,,,,Belal paid the balance
+E-003,P-2025-01,Water for ushers,Logistics,Meals,,normal,2000,2000,Omar Adel,,,2025-03-10,,EGP,,,,
+E-004,P-2025-01,Meta Quest 3 headsets,Assets,VR Equipment,,owned_asset,125000,125000,Company,Company Bank,,2025-03-01,,EGP,,Meta Quest 3,5,
+E-005,,Office rent — March,Company Overhead,Office,,normal,15000,15000,Company,Company Bank,,2025-03-01,,EGP,,,,

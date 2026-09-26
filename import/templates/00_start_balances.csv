@@ -1,0 +1,5 @@
+﻿item,person,amount,date,notes
+bank_opening,,150000,2025-01-01,Bank balance the day before the first record in these sheets
+bank_today,,412350,2026-09-26,Real bank balance today — used only to check the import reconciles
+owed_to_person,Wahid,30000,2025-01-01,Old recovery due from 2024 work not in these sheets
+held_by_partner,Belal,5000,2025-01-01,Company cash Belal was holding
