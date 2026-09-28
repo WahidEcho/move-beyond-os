@@ -24,8 +24,8 @@ const GROUP: Record<string, string> = {
   company_funding: "4 · Move Beyond funding recovery", fee: "5 · Partner / commercial fees", cto: "6 · CTO development recovery",
 };
 
-export function SettlementPanel({ projectId, snapshot, lookups, closed, canReopen, canClose, history, checklist }: {
-  projectId: string; snapshot: SettlementSnapshot; lookups: Lookups; closed: boolean; canReopen: boolean; canClose: boolean;
+export function SettlementPanel({ projectId, marketing, snapshot, lookups, closed, canReopen, canClose, history, checklist }: {
+  projectId: string; marketing?: boolean; snapshot: SettlementSnapshot; lookups: Lookups; closed: boolean; canReopen: boolean; canClose: boolean;
   history: { settlements: any[]; distributions: any[]; losses: any[] }; checklist: Record<string, number>;
 }) {
   const [overrides, setOverrides] = useState<Record<string, { amount?: number; selected?: boolean }>>({});
@@ -105,10 +105,12 @@ export function SettlementPanel({ projectId, snapshot, lookups, closed, canReope
         </div>
       </div>
 
-      {plan.remainingProfit < 0 ? <LossAllocation projectId={projectId} loss={-snapshot.undistributedProfit} partners={snapshot.partners} />
+      {plan.remainingProfit < 0 && marketing ? (
+        <Callout tone="info" title="Sponsorship / marketing investment">This project&rsquo;s net cost of {egp(-snapshot.undistributedProfit)} is Move Beyond&rsquo;s planned marketing investment — no partner loss allocation is needed.</Callout>
+      ) : plan.remainingProfit < 0 ? <LossAllocation projectId={projectId} loss={-snapshot.undistributedProfit} partners={snapshot.partners} />
         : <ProfitDistribution projectId={projectId} plan={plan} snapshot={snapshot} lookups={lookups} unpaid={unpaidObligationsAfter(plan)} />}
 
-      <Closure projectId={projectId} checklist={checklist} canClose={canClose} />
+      <Closure projectId={projectId} checklist={marketing ? { ...checklist, companyFunding: 0, losses: 1 } : checklist} canClose={canClose} />
       <History history={history} />
     </div>
   );

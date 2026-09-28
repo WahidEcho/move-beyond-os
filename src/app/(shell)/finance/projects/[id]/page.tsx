@@ -54,6 +54,7 @@ export default async function ProjectPage({ params, searchParams }: PageProps<"/
         meta={<>
           <StatusBadge status={project.operational_status} />
           <StatusBadge status={project.financial_status} />
+          {project.is_historical_snapshot && <Badge tone="dark">Historical snapshot · pre-opening</Badge>}
           {project.is_marketing_investment && <Badge tone="info">Marketing / sponsorship investment</Badge>}
           {data.services.map((s) => <Badge key={s.service_id}>{s.services?.name}</Badge>)}
         </>}

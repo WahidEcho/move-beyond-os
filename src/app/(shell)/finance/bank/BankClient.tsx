@@ -2,10 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeftRight, Plus, Scale } from "lucide-react";
-import { bankAdjustment, cashTransfer, deleteOpeningBalance, postOpeningBalance } from "@/app/actions/finance";
+import { bankAdjustment, cashTransfer, deleteOpeningBalance, postOpeningBalance, recordBankStatement } from "@/app/actions/finance";
 import { useAction } from "@/components/ui/useAction";
 import { Button } from "@/components/ui/Button";
-import { Card, CardHeader } from "@/components/ui/Card";
+import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Dialog } from "@/components/ui/Dialog";
 import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { DataTable } from "@/components/ui/DataTable";
@@ -152,5 +152,50 @@ export function BankLedger({ rows, accounts }: { rows: any[]; accounts: any[] })
         { key: "in", header: "In", align: "right", cell: (r) => (toNum(r.amount) > 0 ? <Money value={r.amount} /> : ""), value: (r) => Math.max(toNum(r.amount), 0), total: true },
         { key: "out", header: "Out", align: "right", cell: (r) => (toNum(r.amount) < 0 ? <Money value={-toNum(r.amount)} /> : ""), value: (r) => Math.max(-toNum(r.amount), 0), total: true },
       ]} />
+  );
+}
+
+/** Calculated vs actual bank (statement) and the difference (import prompt §10). */
+export function Reconciliation({ accounts, recon, lookups, canManage }: { accounts: any[]; recon: any[]; lookups: Lookups; canManage: boolean }) {
+  const [open, setOpen] = useState(false);
+  const bank = accounts.find((a) => a.is_default) ?? accounts[0];
+  const r = recon.find((x) => x.cash_account_id === bank?.id);
+  const diff = r ? toNum(r.difference) : null;
+  return (
+    <Card>
+      <CardHeader title="Bank reconciliation" subtitle={r ? `Last statement check ${date(r.statement_date)}${r.notes ? ` · ${r.notes}` : ""}` : "Record the real bank statement balance to check the system against it."}
+        actions={canManage && <Button size="sm" onClick={() => setOpen(true)}>Record statement balance</Button>} />
+      <CardBody>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div><p className="text-[12.5px] text-ink-3">Calculated (system) today</p><p className="num mt-1 text-xl font-semibold"><Money value={bank?.balance} /></p></div>
+          <div><p className="text-[12.5px] text-ink-3">Calculated on statement date</p><p className="num mt-1 text-xl font-semibold">{r ? <Money value={r.system_balance} /> : "—"}</p></div>
+          <div><p className="text-[12.5px] text-ink-3">Actual (bank statement)</p><p className="num mt-1 text-xl font-semibold">{r ? <Money value={r.statement_balance} /> : "—"}</p></div>
+          <div><p className="text-[12.5px] text-ink-3">Difference / untracked</p>
+            <p className={`num mt-1 text-xl font-semibold ${diff === null ? "" : Math.abs(diff) < 0.5 ? "text-pos" : "text-neg"}`}>{diff === null ? "—" : <Money value={diff} signed />}</p></div>
+        </div>
+        {diff !== null && Math.abs(diff) >= 0.5 && <Callout tone="warn" className="mt-4">The bank shows {diff > 0 ? "more" : "less"} than the system by {Math.abs(diff).toLocaleString("en-US")} EGP. Record the missing transactions, or a bank adjustment with a reason.</Callout>}
+      </CardBody>
+      {open && <StatementDialog lookups={lookups} defaultAccount={bank?.id} onClose={() => setOpen(false)} />}
+    </Card>
+  );
+}
+
+function StatementDialog({ lookups, defaultAccount, onClose }: { lookups: Lookups; defaultAccount?: string; onClose: () => void }) {
+  const [acc, setAcc] = useState(defaultAccount ?? "");
+  const [d, setD] = useState(today());
+  const [bal, setBal] = useState("");
+  const [notes, setNotes] = useState("");
+  const { run, pending, error } = useAction(recordBankStatement, { success: "Statement balance recorded", onSuccess: onClose });
+  return (
+    <Dialog open onClose={onClose} title="Record bank statement balance" size="sm"
+      footer={<><Button variant="ghost" onClick={onClose}>Cancel</Button><Button variant="primary" loading={pending} disabled={bal === ""} onClick={() => run(acc, d, Number(bal), notes || null)}>Save</Button></>}>
+      <div className="space-y-4">
+        <Field label="Account"><CashAccountSelect lookups={lookups} value={acc} onChange={setAcc} /></Field>
+        <Field label="Statement date"><Input type="date" value={d} onChange={(e) => setD(e.target.value)} /></Field>
+        <Field label="Balance on the statement"><Input type="number" value={bal} onChange={(e) => setBal(e.target.value)} /></Field>
+        <Field label="Notes"><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></Field>
+      </div>
+      {error && <Callout tone="danger" className="mt-3">{error.error}</Callout>}
+    </Dialog>
   );
 }

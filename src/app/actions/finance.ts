@@ -92,6 +92,9 @@ export async function cashTransfer(fromId: string, toId: string, amount: number,
 export async function bankAdjustment(cashAccountId: string, amount: number, date: string, reason: string, key: string) {
   return callRpc("mb_bank_adjustment", { p_org: await org(), p_cash_account: cashAccountId, p_amount: amount, p_date: date, p_reason: reason, p_idempotency_key: key }, ["/finance"]);
 }
+export async function recordBankStatement(cashAccountId: string, date: string, balance: number, notes: string | null, _key: string) {
+  return callRpc("mb_record_bank_statement", { p_org: await org(), p_cash_account: cashAccountId, p_date: date, p_balance: balance, p_notes: notes }, ["/finance/bank", "/finance"]);
+}
 export async function postOpeningBalance(payload: J, key: string) {
   return callRpc("mb_post_opening_balance", { p_org: await org(), p_payload: payload, p_idempotency_key: key }, ["/finance"]);
 }

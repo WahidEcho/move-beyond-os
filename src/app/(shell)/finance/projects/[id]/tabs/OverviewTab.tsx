@@ -16,6 +16,11 @@ export function OverviewTab({ data, tech, lookups, showMoney }: {
   const label = m ? profitLabel(m) : null;
   return (
     <div className="space-y-6">
+      {data.project.is_historical_snapshot && (
+        <div className="rounded-xl border border-line bg-subtle px-4 py-3 text-sm text-ink-2">
+          <b className="text-ink">Historical snapshot.</b> Settled before the opening balance; its cash ran through the pre-opening historical ledger and does not affect the current bank. {data.project.historical_note}
+        </div>
+      )}
       {prompts.map((u) => (
         <TechnologyPrompt key={u.id} projectId={data.project.id} lookups={lookups} technologyId={u.technology_id} name={u.tech?.name}
           outstanding={toNum(u.tech?.outstanding)} developer={u.tech?.developer_name} />

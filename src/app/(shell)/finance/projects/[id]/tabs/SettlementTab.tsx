@@ -44,6 +44,6 @@ export async function SettlementTab({ projectId, orgId, data, tech, lookups, clo
     assets: expenses.filter((e) => e.expense_type === "owned_asset").length, undistributed: m.undistributedProfit,
     distributions: dist.distributions.length, losses: dist.losses.length,
   };
-  return <SettlementPanel projectId={projectId} snapshot={snapshot} lookups={lookups} closed={closed} canReopen={canReopen} canClose={canClose}
+  return <SettlementPanel projectId={projectId} marketing={!!data.project.is_marketing_investment} snapshot={snapshot} lookups={lookups} closed={closed} canReopen={canReopen} canClose={canClose}
     history={{ settlements: dist.settlements, distributions: dist.distributions, losses: dist.losses }} checklist={checklist} />;
 }
